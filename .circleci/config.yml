@@ -32,8 +32,8 @@ jobs:
             name: Run Eureka
             command: |
                 docker run --rm --network host \
-                -v "$(pwd)":/home/repo \
                 -v /var/run/docker.sock:/var/run/docker.sock \
+                -v "$(pwd)":/home/repo \
                 -e EUREKA_USER=$EUREKA_USER \
                 -e EUREKA_PASSWORD=$EUREKA_PASSWORD \
                 -e DIND_USER_HOME="$(pwd)" \
