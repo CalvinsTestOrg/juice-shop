@@ -1,10 +1,7 @@
-name: Test GitHub Action Workflow
+name: Eureka Scanning
 
+# Controls when the action will run.
 on:
-  workflow_dispatch:
-  pull_request:
-    branches:
-        - master
   push:
     branches:
         - '*'
@@ -12,20 +9,21 @@ on:
 jobs:
   eureka-scan:
     runs-on: ubuntu-latest
+    name: scan
     steps:
       - name: Checkout GitHub Action
         uses: actions/checkout@v3
 
-      - name: Install dependencies
-        run: npm install && npm i --package-lock-only
-        
-      - name: Run Eureka Scan
-        uses: FWDSEC/eureka-scan-action@eureka-report-pr-comment
-        env:
-          EUREKA_REGISTRY_URL: "fwdsecuritystaging.azurecr.io"
-          EUREKA_REPO: "fwdsec/eureka"
-          EUREKA_TAG: "latest"
-          EUREKA_ENDPOINT: ${{ secrets.EUREKA_ENDPOINT }}
-          EUREKA_USER: ${{ secrets.EUREKA_USER }}
-          EUREKA_PASSWORD: ${{ secrets.EUREKA_PASSWORD }}
-          PROFILE_INFO: ${{ secrets.PROFILE_INFO }} 
+      - name: Pull and Run Eureka
+        run: |
+          docker login -u ${{ secrets.EUREKA_USER }} -p ${{ secrets.EUREKA_PASSWORD }} ${{ vars.EUREKA_REGISTRY_URL }}
+          docker pull ${{ vars.EUREKA_REGISTRY_URL }}/${{ vars.EUREKA_REPO }}:${{ vars.EUREKA_TAG }}
+          docker run --rm --network host \
+          -v /var/run/docker.sock:/var/run/docker.sock \
+          -v "$(pwd)":/home/repo \
+          -e DIND_USER_HOME="$(pwd)" \
+          -e EUREKA_ENDPOINT="${{ secrets.EUREKA_ENDPOINT }}" \
+          -e EUREKA_USER=${{ secrets.EUREKA_USER }} \
+          -e EUREKA_PASSWORD=${{ secrets.EUREKA_PASSWORD }} \
+          -e PROFILE_INFO=${{ vars.PROFILE_INFO }} \
+          ${{ vars.EUREKA_REGISTRY_URL }}/${{ vars.EUREKA_REPO }}:${{ vars.EUREKA_TAG }}
