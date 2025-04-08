@@ -1,10 +1,10 @@
 name: Eureka Scanning
 
 # Controls when the action will run.
-# on:
-#   push:
-#     branches:
-#         - '*'
+on:
+  push:
+    branches:
+        - '*'
 
 jobs:
   eureka-scan:
@@ -13,9 +13,6 @@ jobs:
     steps:
       - name: Checkout GitHub Action
         uses: actions/checkout@v3
-
-      - name: Install dependencies
-        run: npm install && npm i --package-lock-only
 
       - name: Pull and Run Eureka
         run: |
@@ -28,5 +25,5 @@ jobs:
           -e EUREKA_ENDPOINT="${{ secrets.EUREKA_ENDPOINT }}" \
           -e EUREKA_USER=${{ secrets.EUREKA_USER }} \
           -e EUREKA_PASSWORD=${{ secrets.EUREKA_PASSWORD }} \
-          -e PROFILE_INFO="${{ vars.PROFILE_INFO }}" \
+          -e PROFILE_INFO=${{ vars.PROFILE_INFO }} \
           ${{ vars.EUREKA_REGISTRY_URL }}/${{ vars.EUREKA_REPO }}:${{ vars.EUREKA_TAG }}
