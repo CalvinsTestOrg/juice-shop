@@ -2,6 +2,7 @@ name: Eureka Scanning
 
 # Controls when the action will run.
 on:
+  workflow_dispatch:
   push:
     branches:
         - '*'
