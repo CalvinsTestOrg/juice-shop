@@ -2,7 +2,6 @@ name: Eureka Scanning
 
 # Controls when the action will run.
 on:
-  workflow_dispatch:
   push:
     branches:
         - '*'
@@ -26,7 +25,5 @@ jobs:
           -e EUREKA_ENDPOINT="${{ secrets.EUREKA_ENDPOINT }}" \
           -e EUREKA_USER=${{ secrets.EUREKA_USER }} \
           -e EUREKA_PASSWORD=${{ secrets.EUREKA_PASSWORD }} \
-          -e PROFILE_INFO="${{ vars.PROFILE_INFO }}" \
-          -e VERACODE_API_KEY_ID=${{ secrets.VERACODE_API_KEY_ID }} \
-          -e VERACODE_API_KEY_SECRET=${{ secrets.VERACODE_API_KEY_SECRET }} \
+          -e PROFILE_INFO=${{ vars.PROFILE_INFO }} \
           ${{ vars.EUREKA_REGISTRY_URL }}/${{ vars.EUREKA_REPO }}:${{ vars.EUREKA_TAG }}
