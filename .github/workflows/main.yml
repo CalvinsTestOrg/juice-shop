@@ -22,7 +22,6 @@ jobs:
           echo "Eureka scan did not complete!" > "$TMPDIR/summary.log"
           echo "tmpdir=$TMPDIR" >> $GITHUB_OUTPUT
           echo "report_file=$TMPDIR/summary.log" >> $GITHUB_OUTPUT
-
           
       - name: Pull and Run Eureka
         run: |
@@ -36,7 +35,7 @@ jobs:
           -e EUREKA_USER=${{ secrets.EUREKA_USER }} \
           -e EUREKA_PASSWORD=${{ secrets.EUREKA_PASSWORD }} \
           -e PROFILE_INFO="${{ vars.PROFILE_INFO }}" \
-          -v ${{ steps.report_prep.output.tmpdir }}:/tmp/eureka \
+          -v "${{ steps.report_prep.outputs.tmpdir }}":/tmp/eureka \
           -e EUREKA_OUTPUT=/tmp/eureka/summary.log \
           ${{ vars.EUREKA_REGISTRY_URL }}/${{ vars.EUREKA_REPO }}:${{ vars.EUREKA_TAG }}
 
@@ -44,5 +43,5 @@ jobs:
         if: always()
         uses: mshick/add-pr-comment@v2
         with:
-          message-path: ${{ steps.report_prep.output.report_file }}  
+          message-path: ${{ steps.report_prep.outputs.report_file }}  
 
