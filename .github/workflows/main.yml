@@ -19,9 +19,10 @@ jobs:
         id: report_prep
         run: |
           TMPDIR=$(mktemp -d)
-          echo "Eureka scan did not complete!" > $TMPDIR/summary.log
-          echo "report_file=$TMPDIR/summary.log" >> "$GITHUB_OUTPUT"        
-          echo "tmpdir=$TMPDIR" >> "$GITHUB_OUTPUT"
+          echo "Eureka scan did not complete!" > "$TMPDIR/summary.log"
+          echo "tmpdir=$TMPDIR" >> $GITHUB_OUTPUT
+          echo "report_file=$TMPDIR/summary.log" >> $GITHUB_OUTPUT
+
           
       - name: Pull and Run Eureka
         run: |
