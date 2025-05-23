@@ -22,7 +22,7 @@ jobs:
 
       - name: Run Container
         run: |
-          docker run --rm -v $(pwd):/home/repo ghcr.io/eurekadevsecops/eureka-radar:staging
+          docker run --rm --user $(id -u):$(id -g) -v $(pwd):/home/repo ghcr.io/eurekadevsecops/eureka-radar:staging
 
       - name: Inspect SARIF file
         if: always()
@@ -31,7 +31,6 @@ jobs:
           stat -c %s salus-report.sarif.json || stat -f %z salus-report.sarif.json
           echo "Contents:"
           cat salus-report.sarif.json || echo "File not found or empty"
-
 
       - name: Upload SARIF Report
         uses: actions/upload-artifact@v4
