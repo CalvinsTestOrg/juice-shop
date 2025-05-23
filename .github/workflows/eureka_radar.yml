@@ -14,7 +14,7 @@ jobs:
 
       - name: Checkout Repository
         uses: actions/checkout@v3
-        
+
       - name: Log in to GHCR
         run: echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u cvu-fwdsec --password-stdin
 
@@ -24,3 +24,9 @@ jobs:
       - name: Run Container
         run: |
           docker run --rm -v $(pwd):/home/repo ghcr.io/eurekadevsecops/eureka-radar:staging
+
+      - name: Upload SARIF Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: salus-report
+          path: salus-report.sarif.json
