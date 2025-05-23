@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Checkout Repository
         uses: actions/checkout@v3
 
@@ -26,7 +25,7 @@ jobs:
           docker run --rm -v $(pwd):/home/repo ghcr.io/eurekadevsecops/eureka-radar:staging
 
       - name: Upload SARIF Report
-        uses: actions/upload-artifact@v3.1.3
+        uses: actions/upload-artifact@v3
         with:
           name: salus-report
           path: salus-report.sarif.json
