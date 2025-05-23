@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: Log in to GHCR
-        run: echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u cvu-fwdsec
+        run: echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u cvu-fwdsec --password-stdin
 
       - name: Pull Eureka Radar Image
         run: docker pull ghcr.io/eurekadevsecops/eureka-radar:staging
