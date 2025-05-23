@@ -25,6 +25,7 @@ jobs:
           docker run --rm -v $(pwd):/home/repo ghcr.io/eurekadevsecops/eureka-radar:staging
 
       - name: Inspect Depscan SARIF report
+        if: always()
         run: |
           echo "==== SARIF File Listing ===="
           ls -lh reports/eureka-radar-sca-report.sarif.json || echo "File not found"
