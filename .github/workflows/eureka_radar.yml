@@ -34,6 +34,12 @@ jobs:
           if [ -f reports/eureka-radar-sca-report.sarif.json ]; then
             head -n 50 reports/eureka-radar-sca-report.sarif.json
           fi
+      - name: Upload Depscan SARIF Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eureka-radar-salus-report
+          path: reports/eureka-radar-sca-report.sarif.json
           
       - name: Inspect SARIF file
         if: always()
