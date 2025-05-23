@@ -26,6 +26,7 @@ jobs:
 
       - name: Upload SARIF Report
         uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: salus-report
           path: salus-report.sarif.json
