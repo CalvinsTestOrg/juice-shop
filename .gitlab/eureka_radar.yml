@@ -1,0 +1,22 @@
+name: Eureka Radar Scan
+on:
+  workflow_dispatch:
+  push:
+    branches:
+        - '*'
+
+jobs:
+  pull-and-run:
+    name: Pull and Run GHCR Image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Log in to GHCR
+        run: echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u cvu-fwdsec
+
+      - name: Pull Eureka Radar Image
+        run: docker pull ghcr.io/eurekadevsecops/eureka-radar:staging
+
+      - name: Run Container
+        run: |
+          docker run --rm -v $(pwd):/home/repo ghcr.io/eurekadevsecops/eureka-radar:staging
