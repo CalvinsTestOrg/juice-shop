@@ -1,9 +1,9 @@
 active_scanners:
-    - EurekaRadarSAST
-    # - EurekaRadarSCA
+    # - EurekaRadarSAST
+    - EurekaRadarSCA
 enforced_scanners:
-    - EurekaRadarSAST
-    # - EurekaRadarSCA
+    # - EurekaRadarSAST
+    - EurekaRadarSCA
 reports:
   - uri: file://salus-report.sarif.json
     format: sarif
