@@ -11,16 +11,20 @@ on:
 
 jobs:
   eureka-scan:
+    environment:
+      name: Staging
     runs-on: ubuntu-latest
     steps:
       - name: Checkout GitHub Action
         uses: actions/checkout@v3
 
-      - name: Install dependencies
-        run: npm install && npm i --package-lock-only
+      # - name: Install dependencies
+      #   run: npm install && npm i --package-lock-only
         
       - name: Run Eureka Scan
         uses: FWDSEC/eureka-scan-action@refactor-gh-action
+        with:
+          tag: 'staging'
         env:
           EUREKA_AGENT_TOKEN: ${{ secrets.EUREKA_AGENT_TOKEN }}
           EUREKA_PROFILE_ID: ${{ secrets.EUREKA_PROFILE_ID }}
