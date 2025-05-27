@@ -10,18 +10,17 @@ on:
         - '*'
 
 jobs:
-  eureka-scan:
+  eureka-devsecops-scan:
     environment:
       name: Staging
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout GitHub Action
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
       # - name: Install dependencies
       #   run: npm install && npm i --package-lock-only
         
-      - name: Run Eureka Scan
+      - name: Run Eureka DevSecOps GitHub Action Scan
         uses: FWDSEC/eureka-scan-action@refactor-gh-action
         with:
           tag: 'staging'
