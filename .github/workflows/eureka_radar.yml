@@ -1,0 +1,57 @@
+name: Eureka Radar Scan
+on:
+  workflow_dispatch:
+  push:
+    branches:
+        - '*'
+
+jobs:
+  pull-and-run:
+    name: Pull and Run GHCR Image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Log in to GHCR
+        run: echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u cvu-fwdsec --password-stdin
+
+      - name: Pull Eureka Radar Image
+        run: docker pull ghcr.io/eurekadevsecops/eureka-radar:staging
+
+      - name: Run Container
+        run: |
+          docker run --rm -v $(pwd):/home/repo ghcr.io/eurekadevsecops/eureka-radar:staging
+
+      - name: Inspect Depscan SARIF report
+        if: always()
+        run: |
+          echo "==== SARIF File Listing ===="
+          ls -lh reports/eureka-radar-sca-report.sarif.json || echo "File not found"
+      
+          echo "==== SARIF Content Preview ===="
+          if [ -f reports/eureka-radar-sca-report.sarif.json ]; then
+            head -n 50 reports/eureka-radar-sca-report.sarif.json
+          fi
+      - name: Upload Depscan SARIF Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eureka-radar-salus-report
+          path: reports/eureka-radar-sca-report.sarif.json
+          
+      - name: Inspect SARIF file
+        if: always()
+        run: |
+          echo "File size:"
+          stat -c %s salus-report.sarif.json || stat -f %z salus-report.sarif.json
+          echo "Contents:"
+          cat salus-report.sarif.json || echo "File not found or empty"
+
+      - name: Upload SARIF Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: salus-report
+          path: salus-report.sarif.json

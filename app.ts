@@ -6,7 +6,7 @@
 async function app () {
   const { default: validateDependencies } = await import('./lib/startup/validateDependenciesBasic')
   await validateDependencies()
-
+  console.log('s')
   const server = await import('./server')
   await server.start()
 }
