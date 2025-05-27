@@ -22,10 +22,7 @@ jobs:
         
       - name: Run Eureka DevSecOps GitHub Action Scan
         uses: FWDSEC/eureka-scan-action@refactor-gh-action
-        with:
-          tag: 'staging'
-          custom_eureka_vdbe_url: 'https://vulns.staging.eurekadevsecops.com'
-          
+
         env:
           EUREKA_AGENT_TOKEN: ${{ secrets.EUREKA_AGENT_TOKEN }}
           EUREKA_PROFILE_ID: ${{ secrets.EUREKA_PROFILE_ID }}
