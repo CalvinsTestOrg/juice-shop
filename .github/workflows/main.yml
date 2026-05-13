@@ -1,50 +1,18 @@
-name: Eureka Scanning
+name: Radar CLI
 
-# Controls when the action will run.
 on:
   push:
-    branches:
-        - '*'
+    branches: [ main ]
   pull_request:
-    branches:
-      - '*'
+    types: [ opened, synchronize, reopened, ready_for_review ]
+    branches: [ main ]
 
 jobs:
-  eureka-scan:
+  security-scan:
+    name: Security Scan
     runs-on: ubuntu-latest
-    name: scan
     steps:
-      - name: Checkout GitHub Action
-        uses: actions/checkout@v3
-
-      # new step - add before the Pull and Run Eureka step
-      - name: Preparing summary report
-        id: report_prep
-        run: |
-          TMPDIR=$(mktemp -d)
-          echo "Eureka scan did not complete!" > "$TMPDIR/summary.log"
-          echo "tmpdir=$TMPDIR" >> $GITHUB_OUTPUT
-          echo "report_file=$TMPDIR/summary.log" >> $GITHUB_OUTPUT
-          
-      - name: Pull and Run Eureka
-        run: |
-          docker login -u ${{ secrets.EUREKA_USER }} -p ${{ secrets.EUREKA_PASSWORD }} ${{ vars.EUREKA_REGISTRY_URL }}
-          docker pull ${{ vars.EUREKA_REGISTRY_URL }}/${{ vars.EUREKA_REPO }}:${{ vars.EUREKA_TAG }}
-          docker run --rm --network host \
-          -v /var/run/docker.sock:/var/run/docker.sock \
-          -v "$(pwd)":/home/repo \
-          -e DIND_USER_HOME="$(pwd)" \
-          -e EUREKA_ENDPOINT="${{ secrets.EUREKA_ENDPOINT }}" \
-          -e EUREKA_USER=${{ secrets.EUREKA_USER }} \
-          -e EUREKA_PASSWORD=${{ secrets.EUREKA_PASSWORD }} \
-          -e PROFILE_INFO="${{ vars.PROFILE_INFO }}" \
-          -v "${{ steps.report_prep.outputs.tmpdir }}":/tmp/eureka \
-          -e EUREKA_OUTPUT=/tmp/eureka/summary.log \
-          ${{ vars.EUREKA_REGISTRY_URL }}/${{ vars.EUREKA_REPO }}:${{ vars.EUREKA_TAG }}
-
-      - name: Write Eureka report to comment
-        if: always()
-        uses: mshick/add-pr-comment@v2
+      - uses: eurekadevsecops/scan-action@v2
         with:
-          message-path: ${{ steps.report_prep.outputs.report_file }}  
-
+          scanners: gitleaks,opengrep,grype
+          token: ${{ secrets.EUREKA_AGENT_TOKEN }}
