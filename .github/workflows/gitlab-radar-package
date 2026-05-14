@@ -1,0 +1,35 @@
+name: Radar Scan
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  radar_scan:
+    runs-on: ubuntu-latest
+
+    env:
+      GITLAB_PAT: ${{ secrets.GITLAB_PAT }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Configure npm for GitLab package registry
+        run: |
+          echo "@eurekadevsecops:registry=https://gitlab.com/api/v4/projects/80326068/packages/npm/" > ~/.npmrc
+          echo "//gitlab.com/api/v4/projects/80326068/packages/npm/:_authToken=${GITLAB_PAT}" >> ~/.npmrc
+
+      - name: Install Radar
+        run: npm i -g @eurekadevsecops/radar-test
+
+      - name: Run Radar scan
+        run: radar scan -c sast
