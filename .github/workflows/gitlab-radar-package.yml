@@ -13,6 +13,7 @@ jobs:
 
     env:
       GITLAB_PAT: ${{ secrets.GITLAB_PAT }}
+      EUREKA_AGENT_TOKEN: ${{ secrets.EUREKA_AGENT_TOKEN }}
 
     steps:
       - name: Checkout
