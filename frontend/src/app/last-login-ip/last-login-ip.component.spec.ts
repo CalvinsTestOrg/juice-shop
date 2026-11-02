@@ -8,6 +8,12 @@ import { LastLoginIpComponent } from './last-login-ip.component'
 import { MatCardModule } from '@angular/material/card'
 import { DomSanitizer } from '@angular/platform-browser'
 
+const createJwt = (payload: object): string => [
+  btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' })),
+  btoa(JSON.stringify(payload)),
+  'signature'
+].join('.')
+
 describe('LastLoginIpComponent', () => {
   let component: LastLoginIpComponent
   let fixture: ComponentFixture<LastLoginIpComponent>
@@ -47,13 +53,13 @@ describe('LastLoginIpComponent', () => {
   })
 
   xit('should set Last-Login IP from JWT as trusted HTML', () => { // FIXME Expected state seems to leak over from previous test case occasionally
-    localStorage.setItem('token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7Imxhc3RMb2dpbklwIjoiMS4yLjMuNCJ9fQ.RAkmdqwNypuOxv3SDjPO4xMKvd1CddKvDFYDBfUt3bg')
+    localStorage.setItem('token', createJwt({ data: { lastLoginIp: '1.2.3.4' } }))
     component.ngOnInit()
     expect(sanitizer.bypassSecurityTrustHtml).toHaveBeenCalledWith('<small>1.2.3.4</small>')
   })
 
   xit('should not set Last-Login IP if none is present in JWT', () => { // FIXME Expected state seems to leak over from previous test case occasionally
-    localStorage.setItem('token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7fX0.bVBhvll6IaeR3aUdoOeyR8YZe2S2DfhGAxTGfd9enLw')
+    localStorage.setItem('token', createJwt({ data: {} }))
     component.ngOnInit()
     expect(sanitizer.bypassSecurityTrustHtml).not.toHaveBeenCalled()
   })
