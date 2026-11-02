@@ -10,6 +10,9 @@ import { RouterTestingModule } from '@angular/router/testing'
 import { ErrorPageComponent } from './error-page/error-page.component'
 
 describe('LoginGuard', () => {
+  const base64UrlEncode = (value: string) =>
+    btoa(value).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '')
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -37,7 +40,13 @@ describe('LoginGuard', () => {
   }))
 
   it('returns payload from decoding a valid JWT', inject([LoginGuard], (guard: LoginGuard) => {
-    localStorage.setItem('token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c')
+    const header = base64UrlEncode(JSON.stringify({ alg: 'HS256', typ: 'JWT' }))
+    const payload = base64UrlEncode(JSON.stringify({
+      sub: '1234567890',
+      name: 'John Doe',
+      iat: 1516239022
+    }))
+    localStorage.setItem('token', `${header}.${payload}.signature`)
     expect(guard.tokenDecode()).toEqual({
       sub: '1234567890',
       name: 'John Doe',
